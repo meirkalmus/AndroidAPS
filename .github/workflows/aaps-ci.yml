@@ -6,10 +6,13 @@ on:
       tagName:
         description: 'Select AAPS Version'
         required: true
-        default: '3.4.2.3'
+        default: '3.4.2.6'
         type: choice
         options:
           # ── 3.4.x (JDK 21) ──────────────────────────────
+          - 3.4.2.6
+          - 3.4.2.5
+          - 3.4.2.4
           - 3.4.2.3
           - 3.4.2.2
           - 3.4.2.1
@@ -269,6 +272,15 @@ jobs:
         run: |
           mv app/build/outputs/apk/${{ env.VARIANT_FLAVOR }}/${{ env.VARIANT_TYPE }}/*.apk aaps-${{ env.VERSION }}${{ env.VERSION_SUFFIX }}.apk
           mv wear/build/outputs/apk/${{ env.VARIANT_FLAVOR }}/${{ env.VARIANT_TYPE }}/*.apk aaps-wear-${{ env.VERSION }}${{ env.VERSION_SUFFIX }}.apk
+
+      - name: Upload APKs as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aaps-${{ env.VERSION }}${{ env.VERSION_SUFFIX }}
+          path: |
+            aaps-${{ env.VERSION }}${{ env.VERSION_SUFFIX }}.apk
+            aaps-wear-${{ env.VERSION }}${{ env.VERSION_SUFFIX }}.apk
+          if-no-files-found: error
 
       - name: Upload APKs to Google Drive
         run: |
